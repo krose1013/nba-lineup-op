@@ -1,0 +1,5 @@
+streamlit
+pandas
+numpy
+scipy
+nba_api
