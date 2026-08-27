@@ -1,4 +1,5 @@
 ﻿import sqlite3
+import time
 import pandas as pd
 import numpy as np
 from nba_api.stats.static import teams
@@ -14,15 +15,17 @@ def scale_to_rating(series, min_rating=1, max_rating=10):
     return scaled.round().clip(min_rating, max_rating).astype(int)
 
 def build_nba_database():
-    print("1. Fetching per-game statistics and turnovers from NBA API...")
+    print("1. Fetching 2025-26 per-game statistics from NBA API...")
     
-    stats_endpoint = leaguedashplayerstats.LeagueDashPlayerStats(per_mode_detailed='PerGame')
+    # Locked explicitly to the 2025-26 season
+    stats_endpoint = leaguedashplayerstats.LeagueDashPlayerStats(
+        per_mode_detailed='PerGame',
+        season='2025-26'
+    )
     stats_df = stats_endpoint.get_data_frames()[0]
     stats_df = stats_df[stats_df['GP'] >= 5].copy()
 
     # --- COMPOSITE PLAYMAKING INDEX ---
-    # Formula: APG * (AST / (AST + TOV))
-    # Protect against division by zero if AST + TOV == 0
     ast_tov_sum = stats_df['AST'] + stats_df['TOV']
     ast_ratio = np.where(ast_tov_sum > 0, stats_df['AST'] / ast_tov_sum, 0)
     stats_df['playmaking_index'] = stats_df['AST'] * ast_ratio
@@ -63,7 +66,14 @@ def build_nba_database():
         print(f"Processing roster: {team_name}")
         
         try:
-            roster = commonteamroster.CommonTeamRoster(team_id=team_id).get_data_frames()[0]
+            # Pause briefly to prevent rate-limiting on team roster fetches
+            time.sleep(0.6)
+            
+            # Lock roster endpoint to 2025-26 season
+            roster = commonteamroster.CommonTeamRoster(
+                team_id=team_id,
+                season='2025-26'
+            ).get_data_frames()[0]
             
             for _, row in roster.iterrows():
                 p_id = int(row['PLAYER_ID'])
@@ -98,7 +108,7 @@ def build_nba_database():
     
     conn.commit()
     conn.close()
-    print("SQL Database successfully updated with Composite Playmaking Ratings!")
+    print("SQL Database successfully updated with 2025-26 Stats!")
 
 if __name__ == "__main__":
     build_nba_database()
