@@ -28,7 +28,7 @@ Data is dynamically ingested from the official NBA API for players with at least
 - **Database Caching:** Uses `@st.cache_data` on SQLite queries to eliminate redundant database hits and ensure instant dashboard responsiveness.
 
 
-## 🧮 Mathematical Formulation
+## Mathematical Formulation
 
 ### 1. Objective Function
 The optimizer selects a 5-player combination from a given team roster $N$ to maximize total lineup shooting output:
