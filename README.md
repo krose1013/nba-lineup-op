@@ -32,7 +32,6 @@ Data is dynamically ingested from the official NBA API for players with at least
 
 ### 1. Objective Function
 The optimizer selects a 5-player combination from a given team roster $N$ to maximize total lineup shooting output:
-
 $$\text{Maximize } Z = \sum_{i \in N} \text{Shooting}_i \cdot x_i$$
 
 Where:
@@ -47,17 +46,20 @@ Where:
 The decision variables are subjected to the following mathematical constraints:
 
 1. **Exact Roster Size Constraint:** Lineups must contain exactly 5 players:
-   $$\sum_{i \in N} x_i = 5$$
+
+$$\sum_{i \in N} x_i = 5$$
 
 2. **Rebounding Floor Constraint:** Combined rebounding rating must meet or exceed the user threshold ($T_{\text{reb}}$):
-   $$\sum_{i \in N} \text{Rebounding}_i \cdot x_i \ge T_{\text{reb}}$$
+
+$$\sum_{i \in N} \text{Rebounding}_i \cdot x_i \ge T_{\text{reb}}$$
 
 3. **Playmaking Floor Constraint:** Combined playmaking rating must meet or exceed the user threshold ($T_{\text{play}}$):
-   $$\sum_{i \in N} \text{Playmaking}_i \cdot x_i \ge T_{\text{play}}$$
+
+$$\sum_{i \in N} \text{Playmaking}_i \cdot x_i \ge T_{\text{play}}$$
 
 4. **Positional Flexibility Constraints:** Ensures basic positional coverage across available player eligibility:
-   $$\sum_{i \in \text{Guards}} x_i \ge 1, \quad \sum_{i \in \text{Forwards}} x_i \ge 1, \quad \sum_{i \in \text{Centers}} x_i \ge 1$$
 
+$$\sum_{i \in \text{Guards}} x_i \ge 1, \quad \sum_{i \in \text{Forwards}} x_i \ge 1, \quad \sum_{i \in \text{Centers}} x_i \ge 1$$
 
 
 ### 3.Composite Playmaking Index
